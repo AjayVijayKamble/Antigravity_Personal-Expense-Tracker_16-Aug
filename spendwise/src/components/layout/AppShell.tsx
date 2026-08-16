@@ -19,15 +19,17 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/60 flex">
-      {/* Fixed Viewport Sidebar */}
+    <div className="min-h-screen bg-slate-50/60">
+      {/* Fixed Viewport Sidebar (z-50) */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
-      {/* Main Content Area (Offset by sidebar width md:pl-56) */}
-      <div className="flex-1 flex flex-col min-w-0 md:pl-56">
+      {/* Main Layout Area (Offset by sidebar width md:pl-56) */}
+      <div className="md:pl-56 flex flex-col min-h-screen min-w-0">
+        {/* Fixed Viewport Header (z-40) */}
         <Header title={getTitle()} onMenuClick={() => setIsSidebarOpen(true)} />
         
-        <main className="flex-1 px-6 py-6 lg:px-8 lg:py-6">
+        {/* Scrollable Main Content (pt-20 clears the 64px fixed header) */}
+        <main className="pt-20 px-6 pb-8 lg:px-8 flex-1">
           <Outlet />
         </main>
       </div>

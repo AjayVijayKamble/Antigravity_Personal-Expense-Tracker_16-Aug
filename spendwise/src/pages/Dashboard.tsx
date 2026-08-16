@@ -1,40 +1,23 @@
-import React, { useState, useMemo } from "react";
+import React from "react";
 import { useFinance } from "../context/FinanceContext";
 import { SpendingChart } from "../components/dashboard/SpendingChart";
 import { CategoryBreakdown } from "../components/dashboard/CategoryBreakdown";
 import { BudgetProgress } from "../components/dashboard/BudgetProgress";
 import { SupportingMetrics } from "../components/dashboard/SupportingMetrics";
-import { MonthSelector } from "../components/dashboard/MonthSelector";
 import { SpendingInsight } from "../components/dashboard/SpendingInsight";
 import { RecentTransactions } from "../components/dashboard/RecentTransactions";
 import { useDashboardData } from "../hooks/useDashboardData";
-import { formatCurrency, generateLastNMonths, formatMonthYear } from "../utils/formatters";
+import { formatCurrency, formatMonthYear } from "../utils/formatters";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 
 export const Dashboard: React.FC = () => {
-  const { expenses, getBudget, setBudget } = useFinance();
-  
-  // Options for the last 6 months starting from August 2026
-  const monthOptions = useMemo(() => generateLastNMonths(6, "2026-08"), []);
-  const [selectedMonth, setSelectedMonth] = useState(monthOptions[0]);
+  const { expenses, getBudget, setBudget, selectedMonth } = useFinance();
   
   const data = useDashboardData(expenses, getBudget, selectedMonth);
 
   return (
     <div className="max-w-[1500px] mx-auto space-y-5 pb-8">
-      
-      {/* Month Selector Controls Row (Top Right Header Alignment) */}
-      <div className="flex items-center justify-between pb-1">
-        <div className="md:hidden text-lg font-bold text-gray-900">Dashboard</div>
-        <div className="ml-auto">
-          <MonthSelector 
-            options={monthOptions} 
-            selectedMonth={selectedMonth} 
-            onSelect={setSelectedMonth} 
-          />
-        </div>
-      </div>
 
       {/* LEVEL 1 & 2: HERO SECTION (Overview Card with Sparkline + Budget Card) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -68,7 +51,7 @@ export const Dashboard: React.FC = () => {
             <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 mb-1 block">
               OVERVIEW
             </span>
-            <p className="text-xs font-semibold text-gray-400 mb-3">
+            <p className="text-xs font-semibold text-gray-400 mb-4">
               Your financial snapshot for {formatMonthYear(selectedMonth)}.
             </p>
 

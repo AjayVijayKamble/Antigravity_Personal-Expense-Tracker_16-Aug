@@ -1,11 +1,15 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { type Expense, type MonthlyBudget } from "../types/finance.types";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-
 import { SEED_BUDGETS, SEED_EXPENSES } from "../data/seedData";
+import { generateLastNMonths } from "../utils/formatters";
+
 interface FinanceContextType {
   expenses: Expense[];
   budgets: MonthlyBudget[];
+  selectedMonth: string;
+  setSelectedMonth: (month: string) => void;
+  monthOptions: string[];
   getBudget: (month: string) => MonthlyBudget | null;
   addExpense: (expense: Omit<Expense, "id">) => void;
   updateExpense: (expense: Expense) => void;
@@ -19,6 +23,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [expenses, setExpenses] = useLocalStorage<Expense[]>("spendwise_expenses", []);
   const [budgets, setBudgets] = useLocalStorage<MonthlyBudget[]>("spendwise_budgets", []);
+  
+  const monthOptions = useMemo(() => generateLastNMonths(6, "2026-08"), []);
+  const [selectedMonth, setSelectedMonth] = useState<string>(monthOptions[0]);
 
   useEffect(() => {
     if (isFirstLoad && expenses.length === 0) {
@@ -64,6 +71,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       value={{
         expenses,
         budgets,
+        selectedMonth,
+        setSelectedMonth,
+        monthOptions,
         getBudget,
         addExpense,
         updateExpense,
